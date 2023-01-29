@@ -5,41 +5,18 @@ const form = document.querySelector('#form');
 const inputUrl = document.querySelector('#input-url');
 const errorMessage = document.querySelector('.error-message');
 const linkCards = document.querySelector('.link-cards');
-const resultSet = []
-//       {
-//             "code": "qEAPeE",
-//             "short_link": "shrtco.de\/qEAPeE",
-//             "full_short_link": "https:\/\/shrtco.de\/qEAPeE",
-//             "short_link2": "9qr.de\/qEAPeE",
-//             "full_short_link2": "https:\/\/9qr.de\/qEAPeE",
-//             "short_link3": "shiny.link\/qEAPeE",
-//             "full_short_link3": "https:\/\/shiny.link\/qEAPeE",
-//             "share_link": "shrtco.de\/share\/qEAPeE",
-//             "full_share_link": "https:\/\/shrtco.de\/share\/qEAPeE",
-//             "original_link": "http:\/\/example.org\/very\/long\/link.html"
-//       },
-//       {
-//             "code": "qEAPeE",
-//             "short_link": "shrtco.de\/qEAPeE",
-//             "full_short_link": "https:\/\/shrtco.de\/qEAPeE",
-//             "short_link2": "9qr.de\/qEAPeE",
-//             "full_short_link2": "https:\/\/9qr.de\/qEAPeE",
-//             "short_link3": "shiny.link\/qEAPeE",
-//             "full_short_link3": "https:\/\/shiny.link\/qEAPeE",
-//             "share_link": "shrtco.de\/share\/qEAPeE",
-//             "full_share_link": "https:\/\/shrtco.de\/share\/qEAPeE",
-//             "original_link": "http:\/\/example.org\/very\/long\/link.html"
-//       }
-// ]
+const resultSet = [];
 
-{/* <div class="link-card">
-            <div class="original-link">https://www.frontendmentor.io</div>
-            <hr />
-            <div class="short-link">https://rel.ink/k4lKyk</div>
-            <button class="copy-link-button">Copy</button>
-          </div> */}
+const removeExistingCards = () => {
+      linkCards.innerHTML = '';
+}
+
+document.querySelector('body').addEventListener('click', function (event) {
+      console.log(event.srcElement.id)
+})
 
 const addCardToPage = (linkObj) => {
+      console.log(linkObj)
       const linkCard = document.createElement('div');
       const originalLink = document.createElement('div');
       const hr = document.createElement('hr');
@@ -50,9 +27,16 @@ const addCardToPage = (linkObj) => {
       originalLink.classList.add('original-link');
       shortLink.classList.add('short-link');
       copyButton.classList.add('copy-link-button');
+      copyButton.id = linkObj.result.code;
 
-      originalLink.textContent = linkObj.original_link;
-      shortLink.textContent = linkObj.short_link;
+      const maxLength = 35;
+
+      if (linkObj.result.original_link.length < maxLength) {
+            originalLink.textContent = linkObj.result.original_link;
+      } else {
+            originalLink.textContent = linkObj.result.original_link.substr(0, maxLength) + '...';
+      }
+      shortLink.textContent = linkObj.result.short_link;
       copyButton.textContent = 'Copy';
 
       linkCard.appendChild(originalLink);
@@ -80,20 +64,22 @@ const requestOptions = {
 
 const formSubmit = (e) => {
       e.preventDefault()
-      if (inputUrl.value) {
+      const url = inputUrl.value;
+      if (url) {
+            const apiUrl = `https://api.shrtco.de/v2/shorten?url=${url}`
             if (inputUrl.classList.contains('error')) {
                   inputUrl.classList.remove('error')
             }
             if (!errorMessage.classList.contains('hide')) {
                   errorMessage.classList.add('hide')
             }
-            fetch("https://api.shrtco.de/v2/shorten?url=example.org/very/long/link.html", requestOptions)
-                  .then(response => response.text())
+            fetch(apiUrl, requestOptions)
+                  .then(response => response.json())
                   .then(result => {
-                        console.log(result)
                         resultSet.push(result);
-                        console.log(resultSet)
+                        removeExistingCards();
                         resultSet.forEach(result => addCardToPage(result));
+                        form.reset();
                   })
                   .catch(error => console.log('error', error));
       } else {
