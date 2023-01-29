@@ -56,6 +56,10 @@ footer>a {
       font-size: 15px;
 }
 
+section {
+      padding-bottom: 6rem;
+}
+
 .container {
       padding-top: 2rem;
 }
@@ -154,6 +158,8 @@ h2 {
       padding: 4rem 0 4rem 0;
       background-color: var(--very-dark-purple);
       background-image: url(./images/bg-boost-mobile.svg);
+      background-repeat: no-repeat;
+      background-size: cover;
 }
 
 .card {
@@ -218,6 +224,10 @@ form {
       background-image: url(./images/bg-shorten-mobile.svg);
       background-repeat: no-repeat;
       padding: 1rem;
+      background-color: var(--very-dark-purple);
+      border-radius: 0.5rem;
+      position: relative;
+      top: -4.5rem;
 }
 
 input {
@@ -237,6 +247,15 @@ form>button {
       border: none;
       font-size: 18px;
       font-weight: 500;
+}
+
+button {
+      cursor: pointer;
+}
+
+button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px #666;
 }
 
 .error {
